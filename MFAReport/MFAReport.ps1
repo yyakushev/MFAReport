@@ -116,9 +116,8 @@ try {
 		@{label="PhoneAppVersion";expression={$_.StrongAuthenticationPhoneAppDetails.PhoneAppVersion}} 
 	$ReportPS | ConvertTo-Html -Head $Header | Out-File "$ReportPath\$ReportName.html"
 	$ReportPS | Export-Csv "$ReportPath\$ReportName.csv"
-
 	Write-InformationEventLog -msg "Please find the `"MFA enabled Office 365 users`" report here $($ReportPath)\$($ReportName).html" -LogPath $LogPath
-	. "$ReportPath\$ReportName.html"
+	. "$ReportPath\$ReportName.html`r`nand CSV version here $ReportPath\$ReportName.csv"
 } catch {
 	Write-ErrorEventLog -msg "Report could not be builded. Please see an error: $($error[0].ToString())" -LogPath $LogPath
 }
