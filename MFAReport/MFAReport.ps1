@@ -87,8 +87,7 @@ try {
 }
 
 try {
-	$users  = Get-MsolUser -All 
-	$MFAUsers = $users | ? {$_.StrongAuthenticationMethods -ne $null} | sort userprincipalname
+	$MFAUsers = Get-MsolUser -All | sort userprincipalname
 	Write-InformationEventLog -msg "The number of users configured for MFA is $($MFAUsers.count)" -LogPath $LogPath
 } catch {
 	Write-ErrorEventLog -msg "Not possible to get the users information. Please see an error: $($error[0].ToString())" -LogPath $LogPath
@@ -100,6 +99,13 @@ try {
 		Write-InformationEventLog -msg "$ReportPath folder doesn't exist. The MFA report will be saved in the current direcotry." -LogPath $LogPath
 		$ReportPath = $PWD
 	}
+	$Header = @"
+		<style>
+		 TABLE {border-width: 1px; border-style: solid; border-color: black; border-collapse: collapse;}
+		 TH {border-width: 1px; padding: 3px; border-style: solid; border-color: black; background-color: #6495ED;}
+		 TD {border-width: 1px; padding: 3px; border-style: solid; border-color: black;}
+		</style>
+"@
 
 	$MFAUsers | select userprincipalname,`
 		@{label="MFA state";expression={if ($_.StrongAuthenticationRequirements.state) {$_.StrongAuthenticationRequirements.state} else {"Disabled"}}},`
