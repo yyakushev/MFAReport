@@ -108,7 +108,7 @@ try {
 "@
 
 	$ReportPS = $MFAUsers | select userprincipalname,`
-		@{label="LoginEnabled";expression={$_.BlockCredential}}
+		@{label="LoginEnabled";expression={$_.BlockCredential}}, `
 		@{label="MFA state";expression={if ($_.StrongAuthenticationRequirements.state) {$_.StrongAuthenticationRequirements.state} else {"Disabled"}}},`
 		@{label="DefaultMFAMethod";expression={$_.StrongAuthenticationMethods| % {if ($_.IsDefault) {"$($_.methodType)"}}}},`
 		@{label="PhoneName";expression={$_.StrongAuthenticationPhoneAppDetails.DeviceName}},`
