@@ -107,13 +107,16 @@ try {
 		</style>
 "@
 
-	$MFAUsers | select userprincipalname,`
+	$ReportPS = $MFAUsers | select userprincipalname,`
+		@{label="LoginEnabled";expression={$_.BlockCredential}}
 		@{label="MFA state";expression={if ($_.StrongAuthenticationRequirements.state) {$_.StrongAuthenticationRequirements.state} else {"Disabled"}}},`
 		@{label="DefaultMFAMethod";expression={$_.StrongAuthenticationMethods| % {if ($_.IsDefault) {"$($_.methodType)"}}}},`
-		@{label="PhoneName";expression={"$($_.StrongAuthenticationPhoneAppDetails.DeviceName)"}},`
-		@{label="PhoneAuthenticationType";expression={"$($_.StrongAuthenticationPhoneAppDetails.AuthenticationType)"}},`
-		@{label="PhoneAppVersion";expression={"$($_.StrongAuthenticationPhoneAppDetails.PhoneAppVersion)"}} `
-		| ConvertTo-Html -Head $Header | Out-File "$ReportPath\$ReportName.html"
+		@{label="PhoneName";expression={$_.StrongAuthenticationPhoneAppDetails.DeviceName}},`
+		@{label="PhoneAuthenticationType";expression={$_.StrongAuthenticationPhoneAppDetails.AuthenticationType}},`
+		@{label="PhoneAppVersion";expression={$_.StrongAuthenticationPhoneAppDetails.PhoneAppVersion}} 
+	$ReportPS | ConvertTo-Html -Head $Header | Out-File "$ReportPath\$ReportName.html"
+	$ReportPS | Export-Csv "$ReportPath\$ReportName.csv"
+
 	Write-InformationEventLog -msg "Please find the `"MFA enabled Office 365 users`" report here $($ReportPath)\$($ReportName).html" -LogPath $LogPath
 	. "$ReportPath\$ReportName.html"
 } catch {
