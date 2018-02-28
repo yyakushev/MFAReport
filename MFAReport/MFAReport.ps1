@@ -96,6 +96,11 @@ try {
 }
 
 try {
+	if 	(!(Test-Path -Path $ReportPath -ErrorAction SilentlyContinue )) {
+		Write-InformationEventLog -msg "$ReportPath folder doesn't exist. The MFA report will be saved in the current direcotry." -LogPath $LogPath
+		$ReportPath = $PWD
+	}
+
 	$MFAUsers | select userprincipalname,`
 		@{label="MFA state";expression={if ($_.StrongAuthenticationRequirements.state) {$_.StrongAuthenticationRequirements.state} else {"Disabled"}}},`
 		@{label="DefaultMFAMethod";expression={$_.StrongAuthenticationMethods| % {if ($_.IsDefault) {"$($_.methodType)"}}}},`
