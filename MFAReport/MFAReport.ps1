@@ -75,7 +75,7 @@ try {
 }
 
 try {
-	if (Get-MsolUserRole -UserPrincipalName $credential.UserName -ErrorAction Stop| ? {$_.name -like "Company Administrator"}) {
+	if (Get-MsolUserRole -UserPrincipalName $credential.UserName | ? {$_.name -like "Company Administrator"}) {
 		Write-InformationEventLog -msg "User $($credential.UserName) is a member of `"Company Administrator`" role" -LogPath $LogPath
 	} else {
 		Write-ErrorEventLog -msg "Please use user that is a member of `"Company Administrator`" role.`r`nReport could not be created." -LogPath $LogPath
